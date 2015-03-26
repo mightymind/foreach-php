@@ -23,7 +23,7 @@ class SMSSender {
 	function _smsapi_communicate($request, $cookie=NULL){
 		$request['format'] = "json";
 		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_URL, "http://api.ssms.su/");
+		curl_setopt($curl, CURLOPT_URL, "http://api2.ssms.su/");
 		curl_setopt($curl, CURLOPT_POST, True);
 		curl_setopt($curl, CURLOPT_POSTFIELDS, $request);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, True);
