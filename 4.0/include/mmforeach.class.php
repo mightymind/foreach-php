@@ -8,9 +8,10 @@ public $data;
 public $debug;
 public $memory;
 public $lazy=array();
+public $error=array();
 public $version=array(
-	'number'=>'3.3 beta2',
-	'date'=>'201505221629',
+	'number'=>'4.0 alfa1',
+	'date'=>'201506181656',
 	'secret'=>'NemoMeImpuneLacessit',
 	);
 
@@ -23,6 +24,8 @@ public $version=array(
 		$this->mem_mark('Init FE: '.$this->_server('REQUEST_URI'));//urldecode(isset($_SERVER["QUERY_STRING"])?$_SERVER["QUERY_STRING"]:'')
 		$this->debug=$this->config['debug'];
 		$this->date=$this->as_int(date("U"));
+		set_error_handler(array(&$this,'onError'));
+		set_exception_handler(array(&$this, 'onException'));
 		}
 
 	public function __destruct()
@@ -41,6 +44,38 @@ public $version=array(
 	public function mem_mark($info,$status=0)
 	{
 		$this->memory[]=array('created_at'=>$this->getMicroTime(),'title'=>$info, 'status'=>$status, 'memory'=>memory_get_usage(),);
+		return $this;
+	}
+	
+	public function onError($errno, $errstr, $errfile, $errline)
+	{
+		//echo $errno.'.'.$errstr.'.'.$errfile.'.'.$errline;
+		if($this->debug) {
+			$this->error[]=array(
+				'created_at'=>$this->getMicroTime(),
+				'id'=>$errno,
+				'title'=>'Err: '.$errstr,
+				'file'=>$errfile.':'.$errline,
+				);
+		}
+		return $this;
+	}
+	
+	public function onException($e)
+	{
+		$fp=fopen($this->config['cache_path'].'/'.$this->config['site'].'/exceptions.log', "a");
+		fwrite($fp, $this->date.' exc#'.$e->getCode().' '.$e->getFile().':'.$e->getLine().' '.$e->getMessage().' '.$e->getTraceAsString()."\n");
+		fclose($fp);
+		
+		if($this->debug) {
+			$this->error[]=array(
+				'created_at'=>$this->getMicroTime(),
+				'id'=>$e->getCode(),
+				'title'=>'Exc: '.$e->getMessage(),
+				'file'=>$e->getFile().':'.$e->getLine().' : '.$e->getTraceAsString(),
+				);
+		}
+		
 		return $this;
 	}
 
@@ -110,7 +145,7 @@ public $version=array(
 			}
 		$this->mem_mark('mdl '.$tpl);
 		}
-	
+	/*
 	public function runLazy($id)
 	{
 		if(isset($this->lazy[$id])) {
@@ -149,6 +184,8 @@ public $version=array(
 		
 		return $res;
 		}
+	*/
+	
 	
 	/*
 	Строковые функции
@@ -231,7 +268,7 @@ public $version=array(
 		$this->mem_mark('genHeaders');
 		if($compress) {
 			@ob_start();
-			@ob_start(array('ob_gzhandler', $compress));
+			@ob_start('ob_gzhandler');
 		}
 		Header("Content-type: $contenttype; charset={$this->config['charset']}");
 		Header("Expires: Fri, 32 Jul 1985 01:01:01 GMT");
@@ -364,7 +401,7 @@ Array(
 		}
 	
 }
-
+/*
 class feRunnable
 {
 	public $param;
@@ -387,7 +424,7 @@ class feRunnable
 		}
 	
 }
-
+*/
 /*
 class feR extends feRunnable {
 	function run(){
