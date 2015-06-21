@@ -10,8 +10,8 @@ public $memory;
 public $lazy=array();
 public $error=array();
 public $version=array(
-	'number'=>'4.0 alfa1',
-	'date'=>'201506181656',
+	'number'=>'4.0 beta1',
+	'date'=>'201506212338',
 	'secret'=>'NemoMeImpuneLacessit',
 	);
 
