@@ -221,7 +221,7 @@ public $version=array(
 
 	public function _server($param) {
 		if ($_SERVER[$param]) {
-			return $this->c_s($_SERVER[$param]);
+			return $_SERVER[$param];
 			} else {
 				return null;
 				}
