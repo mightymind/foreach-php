@@ -83,7 +83,7 @@ public $debug;
 		
 	public function dbGetCountEnt($table,$param,$value) // Возвращает количество записей в таблице
 	{
-		return $this->dbSelectElement($this->dbSelectFirstRow("SELECT COUNT(*) FROM $table WHERE $param='$value'"),0);
+		return $this->dbSelectElement($this->dbSelectFirstRow("SELECT COUNT(*) FROM `$table` WHERE $param='$value'"),0);
 		}
 		
 	public function dbSelect($query) // Выбирает запросом записи из таблицы
@@ -159,14 +159,14 @@ public $debug;
 
 	public function dbDelete($table,$param) // Удаление записи из БД
 	{
-		@$result=mysql_query("DELETE FROM $table $param",$this->dbconnection) or ($this->dberrors[].=mysql_error());
+		@$result=mysql_query("DELETE FROM `$table` $param",$this->dbconnection) or ($this->dberrors[].=mysql_error());
 		$this->dbquerycount++;
 		return $result;
 		}
 
 	public function dbUpdate($table,$newvalue,$param) // Обновление записи в БД
 	{
-		@$result=mysql_query("UPDATE $table SET $newvalue $param",$this->dbconnection) or ($this->dberrors[].=mysql_error());
+		@$result=mysql_query("UPDATE `$table` SET $newvalue $param",$this->dbconnection) or ($this->dberrors[].=mysql_error());
 		$this->dbquerycount++;
 		return $result;
 		}
@@ -179,7 +179,7 @@ public $debug;
 				$_arr_[]="`$_index`='$_value'";
 				}
 			$insert_string=implode(',',$_arr_);
-			@$result=mysql_query("UPDATE $table SET $insert_string $param",$this->dbconnection) or ($this->dberrors[].=mysql_error());
+			@$result=mysql_query("UPDATE `$table` SET $insert_string $param",$this->dbconnection) or ($this->dberrors[].=mysql_error());
 			$this->dbquerycount++;
 			return $result;
 			} else {
@@ -220,8 +220,8 @@ public $debug;
 	
 	public function dbCopyTable($table_from,$table_to)
 	{
-		$this->dbQuery("CREATE TABLE $table_to LIKE $table_from");
-		$this->dbQuery("INSERT $table_to SELECT * FROM $table_from");
+		$this->dbQuery("CREATE TABLE `$table_to` LIKE `$table_from`");
+		$this->dbQuery("INSERT `$table_to` SELECT * FROM `$table_from`");
 		}
 	
 	/*
